@@ -13,10 +13,17 @@ workflows:
       - name: Ver archivos
         script: |
           ls -la
-          ls -la "TYRONE XIT.xcodeproj" || ls -la *.xcodeproj
+          echo "--- PROYECTOS ---"
+          ls -d *.xcodeproj || true
+          echo "--- SCHEMES ---"
+          ls -la
       - name: Build APP sin firmar
         script: |
-          xcodebuild -project "TYRONE XIT.xcodeproj" -scheme "TYRONE XIT" -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" BUILD_DIR=build
+          PROJECT=$(ls -d *.xcodeproj | head -n 1)
+          echo "Proyecto: $PROJECT"
+          SCHEME=$(basename "$PROJECT" .xcodeproj)
+          echo "Scheme: $SCHEME"
+          xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" BUILD_DIR=build
       - name: Crear IPA sin firmar
         script: |
           APP_PATH=$(find build -name "*.app" | head -n 1)
