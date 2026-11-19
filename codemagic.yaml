@@ -12,15 +12,24 @@ workflows:
     scripts:
       - name: Ver archivos
         script: |
+          echo "=== RAIZ ==="
           ls -la
-          echo "--- PROYECTOS ---"
-          ls -d *.xcodeproj || true
-          echo "--- SCHEMES ---"
-          ls -la
+          echo "=== BUSCAR XCODEPROJ ==="
+          find . -name "*.xcodeproj" | head -n 20
+          echo "=== BUSCAR XCWORKSPACE ==="
+          find . -name "*.xcworkspace" | head -n 20
+          echo "=== BUSCAR Package.swift ==="
+          find . -name "Package.swift" | head -n 20
+          echo "=== TODOS LOS ARCHIVOS ==="
+          find . -type f | head -n 100
       - name: Build APP sin firmar
         script: |
-          PROJECT=$(ls -d *.xcodeproj | head -n 1)
+          PROJECT=$(find . -name "*.xcodeproj" | head -n 1)
           echo "Proyecto: $PROJECT"
+          if [ -z "$PROJECT" ]; then
+            echo "NO HAY XCODEPROJ, revisa el log de Ver archivos"
+            exit 1
+          fi
           SCHEME=$(basename "$PROJECT" .xcodeproj)
           echo "Scheme: $SCHEME"
           xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" BUILD_DIR=build
