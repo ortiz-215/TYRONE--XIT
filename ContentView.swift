@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PatchItem: Identifiable {
-    let id = UUID(com.apple.mobile.MobileHouseArrest)
+    let id = UUID()
     var nombre: String
     var reglas: String
 }
