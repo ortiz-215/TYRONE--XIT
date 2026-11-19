@@ -1,0 +1,27 @@
+workflows:
+  ios-workflow:
+    name: Tyrone XIT iOS Sin Firmar
+    instance_type: mac_mini_m1
+    max_build_duration: 60
+    environment:
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+    scripts:
+      - name: Instalar XcodeGen
+        script: |
+          brew install xcodegen
+          xcodegen generate
+      - name: Build APP sin firmar
+        script: |
+          xcodebuild -project TyroneXIT.xcodeproj -scheme TyroneXIT -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" BUILD_DIR=build
+      - name: Crear IPA sin firmar
+        script: |
+          mkdir -p Payload
+          cp -r build/Release-iphoneos/TyroneXIT.app Payload/
+          zip -r TyroneXIT-SIN-FIRMAR.ipa Payload
+          rm -rf Payload
+    artifacts:
+      - TyroneXIT-SIN-FIRMAR.ipa
