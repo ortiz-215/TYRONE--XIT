@@ -10,10 +10,10 @@ workflows:
       events:
         - push
     scripts:
-      - name: Instalar XcodeGen
+      - name: Ver archivos
         script: |
-          brew install xcodegen
-          xcodegen generate
+          ls -la
+          ls -la "TYRONE XIT.xcodeproj" || ls -la *.xcodeproj
       - name: Build APP sin firmar
         script: |
           xcodebuild -project "TYRONE XIT.xcodeproj" -scheme "TYRONE XIT" -sdk iphoneos -configuration Release CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" BUILD_DIR=build
